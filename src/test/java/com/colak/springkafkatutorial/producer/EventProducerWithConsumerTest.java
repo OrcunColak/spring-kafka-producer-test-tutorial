@@ -77,24 +77,20 @@ class EventProducerWithConsumerTest {
 
     @Test
     void testWithConsumer() {
-        // given
         MyEvent event = new MyEvent(UUID.randomUUID(), 1, LocalDateTime.now());
-        // when
         eventProducer.publish(event);
 
-        // then
         // Create the consumer
         Map<String, Object> consumerProperties = getConsumerProperties();
         consumerProperties.put(ConsumerConfig.GROUP_ID_CONFIG, "consumer-group-single-0");
 
         try (KafkaConsumer<MyKeyAvro, MyEventAvro> consumer = new KafkaConsumer<>(consumerProperties)) {
-            consumer.subscribe(Collections.singletonList("topic"));
+            consumer.subscribe(Collections.singletonList(EventProducer.TOPIC_NAME));
             Awaitility.await()
                     .atMost(5, TimeUnit.SECONDS)
                     .until(
                             () -> {
-                                ConsumerRecords<MyKeyAvro, MyEventAvro> records =
-                                        consumer.poll(Duration.ofMillis(100));
+                                ConsumerRecords<MyKeyAvro, MyEventAvro> records = consumer.poll(Duration.ofMillis(100));
 
                                 if (records.isEmpty()) {
                                     return false;

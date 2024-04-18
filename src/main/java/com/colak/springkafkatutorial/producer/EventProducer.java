@@ -13,17 +13,19 @@ public class EventProducer {
 
     private final KafkaTemplate<MyKeyAvro, MyEventAvro> kafkaTemplate;
 
-    public void publish(MyEvent event) {
-        // Map Event to avro
-        MyEventAvro myEventAvro =
-                MyEventAvro.newBuilder()
-                        .setId(event.id())
-                        .setVersion(event.version())
-                        .setOccurredAt(event.occurredAt().toString())
-                        .build();
+    public static final String TOPIC_NAME = "topic";
 
+    public void publish(MyEvent event) {
+
+        // Map Event to avro
         MyKeyAvro myKeyAvro = MyKeyAvro.newBuilder().setId(event.id()).build();
 
-        this.kafkaTemplate.send("topic", myKeyAvro, myEventAvro);
+        MyEventAvro myEventAvro = MyEventAvro.newBuilder()
+                .setId(event.id())
+                .setVersion(event.version())
+                .setOccurredAt(event.occurredAt().toString())
+                .build();
+
+        this.kafkaTemplate.send(TOPIC_NAME, myKeyAvro, myEventAvro);
     }
 }

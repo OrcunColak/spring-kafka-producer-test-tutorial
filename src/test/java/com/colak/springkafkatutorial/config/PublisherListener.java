@@ -1,4 +1,4 @@
-package com.colak.springkafkatutorial.producer;
+package com.colak.springkafkatutorial.config;
 
 
 import com.colak.kafkapublishertest.avro.MyEventAvro;

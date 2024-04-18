@@ -1,5 +1,6 @@
 package com.colak.springkafkatutorial.producer;
 
+import com.colak.springkafkatutorial.config.PublisherListener;
 import com.colak.springkafkatutorial.model.MyEvent;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.Test;
@@ -21,7 +22,7 @@ import java.util.concurrent.TimeUnit;
 
 @SpringBootTest
 @Testcontainers
-class EventProducerTest {
+class EventProducerWithListenerTest {
 
     private static final Network NETWORK = Network.newNetwork();
 
@@ -58,7 +59,7 @@ class EventProducerTest {
     @DynamicPropertySource
     static void overrideProperties(DynamicPropertyRegistry registry) {
         registry.add("spring.kafka.bootstrap-servers", KAFKA_CONTAINER::getBootstrapServers);
-        registry.add("spring.kafka.properties.schema.registry.url", EventProducerTest::getSchemaRegistryUrl);
+        registry.add("spring.kafka.properties.schema.registry.url", EventProducerWithListenerTest::getSchemaRegistryUrl);
     }
 
     private static String getSchemaRegistryUrl() {
@@ -68,13 +69,10 @@ class EventProducerTest {
 
     @Test
     void testWithListener() {
-        // given
         MyEvent event = new MyEvent(UUID.randomUUID(), 1, LocalDateTime.now());
 
-        // when
         eventProducer.publish(event);
 
-        // then
         Awaitility.await()
                 .atMost(5, TimeUnit.SECONDS)
                 .until(

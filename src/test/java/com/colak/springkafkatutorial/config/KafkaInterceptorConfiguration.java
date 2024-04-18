@@ -2,7 +2,6 @@ package com.colak.springkafkatutorial.config;
 
 import com.colak.kafkapublishertest.avro.MyEventAvro;
 import com.colak.kafkapublishertest.avro.MyKeyAvro;
-import com.colak.springkafkatutorial.producer.PublisherListener;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.core.KafkaTemplate;
